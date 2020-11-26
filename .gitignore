@@ -1,0 +1,6 @@
+.DS_Store
+*.dSYM
+*.o
+alphatoe.c
+ttt.h
+ttt1.c
