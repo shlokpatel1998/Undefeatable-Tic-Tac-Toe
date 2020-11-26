@@ -28,6 +28,9 @@ count_nodes: count_nodes.o ttt1.o ttt2.o
 	$(CC) $(CFLAGS) count_nodes.o ttt1.o ttt2.o -o count_nodes
 
 clean:
+	rm *.o
+
+cleanall:
 	rm *.o alphatoe show_node count_nodes
 
 run1: alphatoe
@@ -36,7 +39,7 @@ run1: alphatoe
 
 run2: show_node
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --dsymutil=yes ./show_node 0
-	./show_node 0 2
+	./show_node 0 2 83 89 116
 
 run3: count_nodes
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --dsymutil=yes ./count_nodes

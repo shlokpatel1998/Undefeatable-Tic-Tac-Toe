@@ -2,13 +2,13 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
-
+//initializes all nodes in hash table with init value of 0
 void init_boards() {
     for(int i = 0; i < HSIZE; i++) {
         htable[i].init = 0;
     }
 }
-
+//calculates the number of moves made on the board
 int depth(Board board) {
     int count = 0;
     for(int i = 0; i < 9; i++) {
@@ -18,7 +18,7 @@ int depth(Board board) {
     }
     return count;
 }
-
+//determines the winner based on the baord inputed 
 char winner(Board board) {
     int xCountTotal = 0;
     int oCountTotal = 0;
@@ -51,7 +51,7 @@ char winner(Board board) {
         return '?';
     }
 }
-
+//determines if it is O's or X's turn or if the game is over 
 char turn(Board board) {
     int moves = depth(board);
     if(moves != 9 && winner(board) == '?') {
@@ -66,7 +66,7 @@ char turn(Board board) {
         return '-';
     }
 }
-
+//initializes the board with values for turn, init, winner, depth, turn and its board string
 void init_board(Board board) {
     int hash = board_hash(board);
     htable[hash].init = 1;
@@ -75,7 +75,7 @@ void init_board(Board board) {
     htable[hash].depth = depth(board);
     strcpy(htable[hash].board, board);
 }
-
+//joins the graph by calling the function recursively if the board hasn't been already initialized and is a valid move (game not over)
 void join_graph(Board board) {
     int hash = board_hash(board);
     for(int i = 0; i < 9; i++) {
@@ -96,7 +96,7 @@ void join_graph(Board board) {
         }
     }
 }
-
+//calls this function which recursively goes to the end of the graph and works its way "out" of recursion to assign a score for every VALID node
 void recursive(struct BoardNode node) {
     if(node.winner == '?') {
        for(int i = 0; i < 9; i++) {
@@ -119,7 +119,7 @@ void recursive(struct BoardNode node) {
         if(htable[hash].turn == 'X') {
             int max = -2;
             for(int i = 0; i < 9; i++) {
-                if(htable[node.move[i]].init == 1) { // 
+                if(htable[node.move[i]].init == 1) { 
                     if(max < htable[node.move[i]].score) {
                         max = htable[node.move[i]].score;
                     }
@@ -141,11 +141,13 @@ void recursive(struct BoardNode node) {
     }
 }
 
-
+//this function calls the helper recursive function
+//NOTE: the htable[-1].init = 0 is something that fixed the program and I cannot understand why. I have emailed the course email for assistance. 
 void compute_score() {    
+    htable[-1].init = 0;
     recursive(htable[0]);
 }
-
+//calculates the best move based on the score of nodes in the next move (looks 1 board ahead)
 int best_move(int board) {
     struct BoardNode node = htable[board];
     int bestmoveX = -2;

@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
-
+//function counts the max legal nodes in the hash table
 int main(int argc, char*argv[]) {
 
     init_boards();
@@ -15,7 +15,6 @@ int main(int argc, char*argv[]) {
             count++;
         }
     }
-    printf("Number of nodes that can occur: %d\n", count);
-
+    printf("%d\n", count);
     return 0;
 }

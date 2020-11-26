@@ -14,7 +14,6 @@ int main(int argc, char*argv[]) {
         int hash;
         sscanf(argv[i], "%d", &hash);
         print_node(htable[hash]);
-        printf("best move: %d\n", best_move(hash));
         i++;
     }
     return 0;
