@@ -97,56 +97,56 @@ void join_graph(Board board) {
     }
 }
 //calls this function which recursively goes to the end of the graph and works its way "out" of recursion to assign a score for every VALID node
-void recursive(struct BoardNode node) {
-    if(node.winner == '?') {
-       for(int i = 0; i < 9; i++) {
-           if(htable[node.move[i]].init == 1) {
-               recursive(htable[node.move[i]]);
-           }
-       }
-    }
-    int hash = board_hash(node.board);
-    if(htable[hash].winner == '-') {
-        htable[hash].score = 0;
-    }
-    else if(htable[hash].winner == 'O') {
-        htable[hash].score = -1;
-    }
-    else if(htable[hash].winner == 'X') {
-        htable[hash].score = 1;
-    }
-    else{
-        if(htable[hash].turn == 'X') {
-            int max = -2;
-            for(int i = 0; i < 9; i++) {
-                if(htable[node.move[i]].init == 1) { 
-                    if(max < htable[node.move[i]].score) {
-                        max = htable[node.move[i]].score;
+
+//assigns a score for each node based on its children nodes 
+//goes through all the nodes in each depth starting from deepest to least 
+void compute_score() {    
+    htable[-1].init = 0;
+    for(int j = 9; j >= 0; j--) {
+        for(int i = 0; i < HSIZE; i++) {
+            if( (htable[i].init == 1) && (htable[i].depth == j) ) {   
+                struct BoardNode node = htable[i];
+                int hash = board_hash(node.board);
+                if(node.winner == '-') {
+                    htable[hash].score = 0;
+                }
+                else if(node.winner == 'O') {
+                    htable[hash].score = -1;
+                }
+                else if(node.winner == 'X') {
+                    htable[hash].score = 1;
+                }
+                else {
+                    if(node.turn == 'X') {
+                        int max = -2;
+                        for(int i = 0; i < 9; i++) {
+                            if( (htable[node.move[i]].init) == 1 && (node.move[i] != -1) )  { 
+                                struct BoardNode nodechild = htable[node.move[i]]; 
+                                if(max < nodechild.score) {
+                                    max = nodechild.score;
+                                }
+                            }
+                        }
+                        htable[hash].score = max;
+                    }
+                    else if(node.turn == 'O') {
+                        int min = 2;
+                        for(int i = 0; i < 9; i++) {
+                            if( (htable[node.move[i]].init == 1) && (node.move[i] != -1) ) {
+                                struct BoardNode nodechild = htable[node.move[i]]; 
+                                if(min > nodechild.score) {
+                                    min = nodechild.score;
+                                }
+                            }
+                        }
+                        htable[hash].score = min;
                     }
                 }
             }
-            htable[hash].score = max;
-        }
-        else if(htable[hash].turn == 'O') {
-            int min = 2;
-            for(int i = 0; i < 9; i++) {
-                if(htable[node.move[i]].init == 1) {
-                    if(min > htable[node.move[i]].score) {
-                        min = htable[node.move[i]].score;
-                    }
-                }
-            }
-            htable[hash].score = min;
         }
     }
 }
 
-//this function calls the helper recursive function
-//NOTE: the htable[-1].init = 0 is something that fixed the program and I cannot understand why. I have emailed the course email for assistance. 
-void compute_score() {    
-    htable[-1].init = 0;
-    recursive(htable[0]);
-}
 //calculates the best move based on the score of nodes in the next move (looks 1 board ahead)
 int best_move(int board) {
     struct BoardNode node = htable[board];

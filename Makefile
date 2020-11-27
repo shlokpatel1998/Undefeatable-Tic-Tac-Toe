@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -Wall -pedantic
 
-all: alphatoe 
+all: alphatoe count_nodes show_node ttt2.o ttt1.o
 
 alphatoe.o: alphatoe.c ttt.h
 	$(CC) $(CFLAGS) -c alphatoe.c
@@ -28,9 +28,6 @@ count_nodes: count_nodes.o ttt1.o ttt2.o
 	$(CC) $(CFLAGS) count_nodes.o ttt1.o ttt2.o -o count_nodes
 
 clean:
-	rm *.o
-
-cleanall:
 	rm *.o alphatoe show_node count_nodes
 
 run1: alphatoe
@@ -39,7 +36,7 @@ run1: alphatoe
 
 run2: show_node
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --dsymutil=yes ./show_node 0
-	./show_node 0 2 83 89 116
+	./show_node 0 2 83 137 866 5240 
 
 run3: count_nodes
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --dsymutil=yes ./count_nodes
